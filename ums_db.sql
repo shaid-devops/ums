@@ -43,29 +43,6 @@ LOCK TABLES `books` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `departments`
---
-
-DROP TABLE IF EXISTS `departments`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `departments` (
-  `dept_id` int(9) NOT NULL AUTO_INCREMENT,
-  `dept_name` char(30) DEFAULT NULL,
-  PRIMARY KEY (`dept_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `departments`
---
-
-LOCK TABLES `departments` WRITE;
-/*!40000 ALTER TABLE `departments` DISABLE KEYS */;
-/*!40000 ALTER TABLE `departments` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `dept_names`
 --
 
@@ -236,6 +213,30 @@ LOCK TABLES `stu_lm_reg` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `stu_pay`
+--
+
+DROP TABLE IF EXISTS `stu_pay`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `stu_pay` (
+  `stu_pay_id` int(11) NOT NULL AUTO_INCREMENT,
+  `stu_id` int(9) DEFAULT NULL,
+  `payment_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`stu_pay_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `stu_pay`
+--
+
+LOCK TABLES `stu_pay` WRITE;
+/*!40000 ALTER TABLE `stu_pay` DISABLE KEYS */;
+/*!40000 ALTER TABLE `stu_pay` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `stu_reg`
 --
 
@@ -250,7 +251,6 @@ CREATE TABLE `stu_reg` (
   `mother_name` char(20) NOT NULL,
   `phone` char(11) NOT NULL,
   `email` varchar(40) DEFAULT NULL,
-  `gender` enum('Male','Female') NOT NULL,
   `dob` date NOT NULL,
   `blood_group` varchar(2) DEFAULT NULL,
   `nid` int(17) DEFAULT NULL,
@@ -302,6 +302,55 @@ LOCK TABLES `stu_state` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `teacher_dept`
+--
+
+DROP TABLE IF EXISTS `teacher_dept`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `teacher_dept` (
+  `teacher_dept_id` int(9) NOT NULL AUTO_INCREMENT,
+  `teacher_id` int(9) DEFAULT NULL,
+  `dept_id` int(9) DEFAULT NULL,
+  PRIMARY KEY (`teacher_dept_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `teacher_dept`
+--
+
+LOCK TABLES `teacher_dept` WRITE;
+/*!40000 ALTER TABLE `teacher_dept` DISABLE KEYS */;
+/*!40000 ALTER TABLE `teacher_dept` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `teachers`
+--
+
+DROP TABLE IF EXISTS `teachers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `teachers` (
+  `teacher_id` int(9) NOT NULL AUTO_INCREMENT,
+  `teacher_name` char(30) DEFAULT NULL,
+  `dept_name` int(9) DEFAULT NULL,
+  `dept_id` int(9) DEFAULT NULL,
+  PRIMARY KEY (`teacher_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `teachers`
+--
+
+LOCK TABLES `teachers` WRITE;
+/*!40000 ALTER TABLE `teachers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `teachers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -334,4 +383,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-17 15:10:22
+-- Dump completed on 2024-11-20 10:08:12
