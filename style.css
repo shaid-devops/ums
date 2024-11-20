@@ -1,11 +1,11 @@
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
-  display: flex;
+  display: block;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   margin: 0;
+  height:auto;
 }
 .logo {
   width: 250px;
@@ -15,7 +15,8 @@ body {
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 300px;
+  width: 500px;
+  height:auto;
 }
 
 h2 {

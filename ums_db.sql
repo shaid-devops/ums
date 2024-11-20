@@ -253,7 +253,7 @@ CREATE TABLE `stu_reg` (
   `email` varchar(40) DEFAULT NULL,
   `dob` date NOT NULL,
   `blood_group` varchar(2) DEFAULT NULL,
-  `nid` int(17) DEFAULT NULL,
+  `nid` char(17) DEFAULT NULL,
   `passport` char(20) DEFAULT NULL,
   `pre_state` char(30) DEFAULT NULL,
   `pre_city` varchar(30) DEFAULT NULL,
@@ -262,10 +262,12 @@ CREATE TABLE `stu_reg` (
   `per_city` varchar(30) DEFAULT NULL,
   `per_address` varchar(100) DEFAULT NULL,
   `dept_name` char(40) NOT NULL,
-  `edu_qualification` varchar(30) DEFAULT NULL,
   `dept_id` int(9) DEFAULT NULL,
+  `passwd` varchar(40) NOT NULL,
+  `SSC` varchar(100) DEFAULT NULL,
+  `HSC` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`stu_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -274,6 +276,7 @@ CREATE TABLE `stu_reg` (
 
 LOCK TABLES `stu_reg` WRITE;
 /*!40000 ALTER TABLE `stu_reg` DISABLE KEYS */;
+INSERT INTO `stu_reg` VALUES (1,'test','test','test','tset','32','test@test.com','2024-08-08','A+','3313449','','test','test','test','test','tset','tse','CSE',NULL,'test','test 20212 4.2','test 20212 4.2'),(2,'test','test','test','tset','32','test@test.com','2024-08-08','A+','331344943','','test','test','test','test','tset','tse','CSE',NULL,'test','test 20212 4.2','test 20212 4.2'),(3,'test','test','test','tset','32','test@test.com','2024-08-08','A+','331344943','','test','test','test','test','tset','tse','CSE',NULL,'test','test 20212 4.2','test 20212 4.2'),(4,'test','test','test','tset','32','test@test.com','2024-08-08','A+','0000331344943201','','test','test','test','test','tset','tse','CSE',NULL,'test','test 20212 4.2','test 20212 4.2'),(5,'test','test','test','tset','32','test@test.com','2024-08-08','A+','00003313449432018','','test','test','test','test','tset','tse','CSE',NULL,'test','test 20212 4.2','test 20212 4.2');
 /*!40000 ALTER TABLE `stu_reg` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -383,4 +386,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-20 10:08:12
+-- Dump completed on 2024-11-20 11:45:35
