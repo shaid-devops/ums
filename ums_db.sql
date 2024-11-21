@@ -29,7 +29,9 @@ CREATE TABLE `books` (
   `book_name` char(30) DEFAULT NULL,
   `lend_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `return_date` date DEFAULT NULL,
-  PRIMARY KEY (`book_id`)
+  PRIMARY KEY (`book_id`),
+  KEY `lm_id` (`lm_id`),
+  CONSTRAINT `books_ibfk_1` FOREIGN KEY (`lm_id`) REFERENCES `lm_reg` (`lm_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -52,9 +54,12 @@ DROP TABLE IF EXISTS `dept_names`;
 CREATE TABLE `dept_names` (
   `dept_id` int(9) NOT NULL AUTO_INCREMENT,
   `dept_name` char(40) NOT NULL,
-  `stu_id` int(9) NOT NULL,
-  PRIMARY KEY (`dept_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+  `stu_id` int(9) DEFAULT NULL,
+  PRIMARY KEY (`dept_id`),
+  KEY `stu_id` (`stu_id`),
+  CONSTRAINT `dept_names_ibfk_1` FOREIGN KEY (`dept_id`) REFERENCES `stu_reg` (`dept_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `dept_names_ibfk_2` FOREIGN KEY (`stu_id`) REFERENCES `stu_reg` (`stu_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +82,11 @@ CREATE TABLE `lend_books` (
   `lend_book_id` int(11) NOT NULL AUTO_INCREMENT,
   `book_id` int(11) DEFAULT NULL,
   `stu_id` int(9) DEFAULT NULL,
-  PRIMARY KEY (`lend_book_id`)
+  PRIMARY KEY (`lend_book_id`),
+  KEY `stu_id` (`stu_id`),
+  KEY `book_id` (`book_id`),
+  CONSTRAINT `lend_books_ibfk_1` FOREIGN KEY (`stu_id`) REFERENCES `stu_reg` (`stu_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `lend_books_ibfk_2` FOREIGN KEY (`book_id`) REFERENCES `books` (`book_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -98,9 +107,9 @@ DROP TABLE IF EXISTS `lm_reg`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `lm_reg` (
-  `lm_reg_id` int(9) NOT NULL AUTO_INCREMENT,
+  `lm_id` int(9) NOT NULL AUTO_INCREMENT,
   `mem_name` char(30) DEFAULT NULL,
-  PRIMARY KEY (`lm_reg_id`)
+  PRIMARY KEY (`lm_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -114,6 +123,59 @@ LOCK TABLES `lm_reg` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `months`
+--
+
+DROP TABLE IF EXISTS `months`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `months` (
+  `months_id` int(2) NOT NULL AUTO_INCREMENT,
+  `months_name` int(11) NOT NULL,
+  `payment_id` int(11) NOT NULL,
+  PRIMARY KEY (`months_id`),
+  KEY `payment_id` (`payment_id`),
+  CONSTRAINT `months_ibfk_1` FOREIGN KEY (`payment_id`) REFERENCES `payment` (`payment_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `months`
+--
+
+LOCK TABLES `months` WRITE;
+/*!40000 ALTER TABLE `months` DISABLE KEYS */;
+/*!40000 ALTER TABLE `months` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `notices`
+--
+
+DROP TABLE IF EXISTS `notices`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `notices` (
+  `notice_id` int(9) NOT NULL AUTO_INCREMENT,
+  `notice_details` varchar(200) NOT NULL,
+  `dept_name` char(40) NOT NULL,
+  `dept_id` int(9) NOT NULL,
+  PRIMARY KEY (`notice_id`),
+  KEY `dept_id` (`dept_id`),
+  CONSTRAINT `notices_ibfk_1` FOREIGN KEY (`dept_id`) REFERENCES `dept_names` (`dept_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `notices`
+--
+
+LOCK TABLES `notices` WRITE;
+/*!40000 ALTER TABLE `notices` DISABLE KEYS */;
+/*!40000 ALTER TABLE `notices` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `payment`
 --
 
@@ -123,13 +185,18 @@ DROP TABLE IF EXISTS `payment`;
 CREATE TABLE `payment` (
   `payment_id` int(11) NOT NULL AUTO_INCREMENT,
   `stu_id` int(9) DEFAULT NULL,
-  `pay_month` enum('January','February','March','April','May','June','July','Auguest','September','October','November','December') DEFAULT NULL,
+  `months` char(16) DEFAULT NULL,
   `semester` enum('Summer','Fall','Winter') DEFAULT NULL,
   `amount` float DEFAULT NULL,
   `pay_method` enum('Cash','Bank','MFS') DEFAULT NULL,
   `bank_txn` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`payment_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `months_id` int(2) DEFAULT NULL,
+  PRIMARY KEY (`payment_id`),
+  KEY `stu_id` (`stu_id`),
+  KEY `months_id` (`months_id`),
+  CONSTRAINT `payment_ibfk_1` FOREIGN KEY (`stu_id`) REFERENCES `stu_reg` (`stu_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `payment_ibfk_2` FOREIGN KEY (`months_id`) REFERENCES `months` (`months_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,30 +205,8 @@ CREATE TABLE `payment` (
 
 LOCK TABLES `payment` WRITE;
 /*!40000 ALTER TABLE `payment` DISABLE KEYS */;
+INSERT INTO `payment` VALUES (1,6,'January','Winter',14000,'Cash','',NULL),(2,6,'February','Winter',16000,'Cash','',NULL);
 /*!40000 ALTER TABLE `payment` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `state_name`
---
-
-DROP TABLE IF EXISTS `state_name`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `state_name` (
-  `state_id` int(3) NOT NULL AUTO_INCREMENT,
-  `state_name` char(40) DEFAULT NULL,
-  PRIMARY KEY (`state_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `state_name`
---
-
-LOCK TABLES `state_name` WRITE;
-/*!40000 ALTER TABLE `state_name` DISABLE KEYS */;
-/*!40000 ALTER TABLE `state_name` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -175,7 +220,11 @@ CREATE TABLE `stu_dept` (
   `stu_dept_id` int(11) NOT NULL AUTO_INCREMENT,
   `stu_id` int(9) DEFAULT NULL,
   `dept_id` int(9) DEFAULT NULL,
-  PRIMARY KEY (`stu_dept_id`)
+  PRIMARY KEY (`stu_dept_id`),
+  KEY `dept_id` (`dept_id`),
+  KEY `stu_id` (`stu_id`),
+  CONSTRAINT `stu_dept_ibfk_1` FOREIGN KEY (`stu_id`) REFERENCES `stu_reg` (`stu_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `stu_dept_ibfk_2` FOREIGN KEY (`dept_id`) REFERENCES `dept_names` (`dept_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -199,7 +248,11 @@ CREATE TABLE `stu_lm_reg` (
   `stu_lm_reg_id` int(11) NOT NULL AUTO_INCREMENT,
   `lm_id` int(9) DEFAULT NULL,
   `stu_id` int(9) DEFAULT NULL,
-  PRIMARY KEY (`stu_lm_reg_id`)
+  PRIMARY KEY (`stu_lm_reg_id`),
+  KEY `stu_id` (`stu_id`),
+  KEY `lm_id` (`lm_id`),
+  CONSTRAINT `stu_lm_reg_ibfk_1` FOREIGN KEY (`stu_id`) REFERENCES `stu_reg` (`stu_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `stu_lm_reg_ibfk_2` FOREIGN KEY (`lm_id`) REFERENCES `lm_reg` (`lm_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -223,7 +276,11 @@ CREATE TABLE `stu_pay` (
   `stu_pay_id` int(11) NOT NULL AUTO_INCREMENT,
   `stu_id` int(9) DEFAULT NULL,
   `payment_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`stu_pay_id`)
+  PRIMARY KEY (`stu_pay_id`),
+  KEY `payment_id` (`payment_id`),
+  KEY `stu_id` (`stu_id`),
+  CONSTRAINT `stu_pay_ibfk_1` FOREIGN KEY (`stu_id`) REFERENCES `stu_reg` (`stu_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `stu_pay_ibfk_2` FOREIGN KEY (`payment_id`) REFERENCES `payment` (`payment_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -266,8 +323,9 @@ CREATE TABLE `stu_reg` (
   `passwd` varchar(40) NOT NULL,
   `SSC` varchar(100) DEFAULT NULL,
   `HSC` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`stu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`stu_id`),
+  KEY `dept_id` (`dept_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -276,32 +334,8 @@ CREATE TABLE `stu_reg` (
 
 LOCK TABLES `stu_reg` WRITE;
 /*!40000 ALTER TABLE `stu_reg` DISABLE KEYS */;
-INSERT INTO `stu_reg` VALUES (1,'test','test','test','tset','32','test@test.com','2024-08-08','A+','3313449','','test','test','test','test','tset','tse','CSE',NULL,'test','test 20212 4.2','test 20212 4.2'),(2,'test','test','test','tset','32','test@test.com','2024-08-08','A+','331344943','','test','test','test','test','tset','tse','CSE',NULL,'test','test 20212 4.2','test 20212 4.2'),(3,'test','test','test','tset','32','test@test.com','2024-08-08','A+','331344943','','test','test','test','test','tset','tse','CSE',NULL,'test','test 20212 4.2','test 20212 4.2'),(4,'test','test','test','tset','32','test@test.com','2024-08-08','A+','0000331344943201','','test','test','test','test','tset','tse','CSE',NULL,'test','test 20212 4.2','test 20212 4.2'),(5,'test','test','test','tset','32','test@test.com','2024-08-08','A+','00003313449432018','','test','test','test','test','tset','tse','CSE',NULL,'test','test 20212 4.2','test 20212 4.2');
+INSERT INTO `stu_reg` VALUES (1,'siyam','IBN Nahid','test','tset','32','siyam@test.com','2024-08-08','A+','3313449','','test','test','test','test','tset','tse','CSE',NULL,'test','test 20212 4.2','test 20212 4.2'),(2,'Hasibun Nahar','Tuli','test','tset','32','tuli@test.com','2024-08-08','A+','331344943','','test','test','test','test','tset','tse','CSE',NULL,'test','test 20212 4.2','test 20212 4.2'),(3,'Enamul','Hassan','test','tset','32','test@test.com','2024-08-08','A+','331344943','','test','test','test','test','tset','tse','EEE',NULL,'test','test 20212 4.2','test 20212 4.2'),(4,'Shamim','Hassan','test','tset','32','shamim@test.com','2024-08-08','A+','0000331344943201','','test','test','test','test','tset','tse','ENGLISH',NULL,'test','test 20212 4.2','test 20212 4.2'),(5,'Tanvir','Hassan','test','tset','32','test@test.com','2024-08-08','A+','00003313449432018','','test','test','test','test','tset','tse','LAW',NULL,'test','test 20212 4.2','test 20212 4.2'),(6,'ilhan','khondokar','ABC','XYZ','23423','test@mail.com','2012-12-12','A+','234642123','','Dhaka','Dhaka','dhaka','Bangladesh','Bangladesh','Bangladesh','CSE',NULL,'test','2020','2022');
 /*!40000 ALTER TABLE `stu_reg` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `stu_state`
---
-
-DROP TABLE IF EXISTS `stu_state`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `stu_state` (
-  `stu_state_id` int(11) NOT NULL AUTO_INCREMENT,
-  `state_id` int(3) DEFAULT NULL,
-  `stu_id` int(9) DEFAULT NULL,
-  PRIMARY KEY (`stu_state_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `stu_state`
---
-
-LOCK TABLES `stu_state` WRITE;
-/*!40000 ALTER TABLE `stu_state` DISABLE KEYS */;
-/*!40000 ALTER TABLE `stu_state` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -315,7 +349,11 @@ CREATE TABLE `teacher_dept` (
   `teacher_dept_id` int(9) NOT NULL AUTO_INCREMENT,
   `teacher_id` int(9) DEFAULT NULL,
   `dept_id` int(9) DEFAULT NULL,
-  PRIMARY KEY (`teacher_dept_id`)
+  PRIMARY KEY (`teacher_dept_id`),
+  KEY `dept_id` (`dept_id`),
+  KEY `teacher_id` (`teacher_id`),
+  CONSTRAINT `teacher_dept_ibfk_1` FOREIGN KEY (`dept_id`) REFERENCES `dept_names` (`dept_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `teacher_dept_ibfk_2` FOREIGN KEY (`teacher_id`) REFERENCES `teachers` (`teacher_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -338,10 +376,13 @@ DROP TABLE IF EXISTS `teachers`;
 CREATE TABLE `teachers` (
   `teacher_id` int(9) NOT NULL AUTO_INCREMENT,
   `teacher_name` char(30) DEFAULT NULL,
-  `dept_name` int(9) DEFAULT NULL,
+  `dept_name` char(9) DEFAULT NULL,
+  `salary` int(6) DEFAULT NULL,
   `dept_id` int(9) DEFAULT NULL,
-  PRIMARY KEY (`teacher_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+  PRIMARY KEY (`teacher_id`),
+  KEY `dept_id` (`dept_id`),
+  CONSTRAINT `teachers_ibfk_1` FOREIGN KEY (`dept_id`) REFERENCES `dept_names` (`dept_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -350,31 +391,8 @@ CREATE TABLE `teachers` (
 
 LOCK TABLES `teachers` WRITE;
 /*!40000 ALTER TABLE `teachers` DISABLE KEYS */;
+INSERT INTO `teachers` VALUES (1,'Assistant professor','CSE',100000,NULL),(2,'Senior lecturere','EEE',70000,NULL);
 /*!40000 ALTER TABLE `teachers` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `users`
---
-
-DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `users` (
-  `u_id` int(9) NOT NULL AUTO_INCREMENT,
-  `email` char(40) NOT NULL,
-  `password` varchar(64) NOT NULL,
-  PRIMARY KEY (`u_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `users`
---
-
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -386,4 +404,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-20 11:45:35
+-- Dump completed on 2024-11-21 10:28:15
